@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Billing{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>💰 Billing</h2>
+  {% if bills %}
+  <table>
+    <tr>
+      <th>Student</th>
+      <th>Month</th>
+      <th>Amount</th>
+      <th>Status</th>
+    </tr>
+    {% for bill in bills %}
+    <tr>
+      <td>{{ bill.student_name or 'Unknown' }}</td>
+      <td>{{ bill.bill_month }}</td>
+      <td>₹{{ "%.2f"|format(bill.total_amount) }}</td>
+      <td>
+        {% if bill.paid %}
+          <span style="color: #22C55E; font-weight: bold;">PAID ✅</span>
+        {% else %}
+          <span style="color: #F59E0B; font-weight: bold;">PENDING ⚠️</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No bills generated yet. Add students and meals first.</p>
+  {% endif %}
+</div>
+{% endblock %}

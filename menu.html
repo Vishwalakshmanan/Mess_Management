@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Menu{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>📜 Menu Management</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.menu_date.label(class="label") }}
+      {{ form.menu_date(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.breakfast_menu.label(class="label") }}
+      {{ form.breakfast_menu(class="form-control", rows=3) }}
+    </div>
+    <div class="form-group">
+      {{ form.lunch_menu.label(class="label") }}
+      {{ form.lunch_menu(class="form-control", rows=3) }}
+    </div>
+    <div class="form-group">
+      {{ form.dinner_menu.label(class="label") }}
+      {{ form.dinner_menu(class="form-control", rows=3) }}
+    </div>
+    {{ form.submit(class="btn") }}
+  </form>
+</div>
+
+<div class="card">
+  <h2>📋 Current Menus</h2>
+  {% if menus %}
+    <div class="menu-selector">
+      <h4>Select Meal Type:</h4>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" name="meal_type" value="breakfast" checked>
+          <span>☀️ Breakfast</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="meal_type" value="lunch">
+          <span>🍛 Lunch</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="meal_type" value="dinner">
+          <span>🌙 Dinner</span>
+        </label>
+      </div>
+    </div>
+    <div id="menu-items-display">
+      <!-- Dynamic content populated by JS -->
+    </div>
+  {% else %}
+    <p>No menus added yet. <a href="#add-menu" class="link">Add first menu</a></p>
+  {% endif %}
+
+  <script>
+    var menusData = {{ menus_data | tojson | safe }};
+
+    function parseItems(menuText) {
+      if (!menuText || menuText.trim() === '' || menuText === 'Not set') {
+        return ['Not set'];
+      }
+      var items = menuText.split(/[ ,;\n]+/).map(function(item) {
+        return item.trim();
+      }).filter(function(item) {
+        return item.length > 0;
+      });
+      return items.length > 0 ? items : ['No items'];
+    }
+
+    function updateDisplay() {
+      var selectedType = document.querySelector('input[name="meal_type"]:checked').value;
+      var display = document.getElementById('menu-items-display');
+      
+      var html = '<h4>' + selectedType.charAt(0).toUpperCase() + selectedType.slice(1) + ' Menus:</h4>';
+      var hasItems = false;
+      
+      for (var i = 0; i < menusData.length; i++) {
+        var m = menusData[i];
+        var fieldName = selectedType + '_menu';
+        var menuText = m[fieldName];
+        var items = parseItems(menuText);
+        if (items[0] !== 'Not set' && items[0] !== 'No items') {
+          hasItems = true;
+          var itemHtml = '';
+          for (var j = 0; j < items.length; j++) {
+            itemHtml += '<li>' + items[j] + '</li>';
+          }
+          html += '<div class="menu-card"><h5>' + m.menu_date.isoformat() + '</h5><ul>' + itemHtml + '</ul></div>';
+        }
+      }
+      
+      if (!hasItems) {
+        html += '<p>No items found for this meal type.</p>';
+      }
+      
+      display.innerHTML = html;
+    }
+
+    function initMenuDisplay() {
+      var radios = document.querySelectorAll('input[name="meal_type"]');
+      for (var i = 0; i < radios.length; i++) {
+        radios[i].addEventListener('change', updateDisplay);
+      }
+      if (menusData && menusData.length > 0) {
+        updateDisplay();
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMenuDisplay);
+    } else {
+      initMenuDisplay();
+    }
+  </script>
+
+  <style>
+    .menu-selector { 
+      margin-bottom: 2rem; 
+    }
+    .radio-group { 
+      display: flex; 
+      gap: 1.5rem; 
+      flex-wrap: wrap; 
+    }
+    .radio-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      padding: 0.8rem 1.5rem; 
+      border: 2px solid #e5e7eb; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      transition: all 0.3s; 
+      font-weight: 500; 
+      background: white;
+    }
+    .radio-label:hover { 
+      border-color: #4F46E5; 
+    }
+    .radio-label input[type="radio"]:checked + span {
+      color: #4F46E5; 
+      font-weight: bold;
+    }
+    .menu-card { 
+      background: white; 
+      padding: 1.5rem; 
+      margin-bottom: 1rem; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    }
+    .menu-card h5 { 
+      margin: 0 0 1rem 0; 
+      color: #374151; 
+    }
+    .menu-card ul { 
+      margin: 0; 
+      padding-left: 1.5rem; 
+    }
+    .menu-card li { 
+      margin-bottom: 0.3rem; 
+    }
+    #menu-items-display { 
+      min-height: 200px; 
+    }
+  </style>
+</div>
+
+{% endblock %}

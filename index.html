@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="hero text-center">
+  <div class="hero-content">
+    <h1 class="hero-title">Welcome to Hostel Mess Management</h1>
+    <p class="hero-subtitle">Efficient meal tracking, billing, and menu management for your hostel</p>
+    <div class="hero-buttons">
+      <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg mr-3">🔐 Admin Login</a>
+      <a href="{{ url_for('register') }}" class="btn btn-secondary btn-lg">📝 Student Register</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hostel Mess Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">🍽️ Mess Mgmt</a>
+            
+            <div class="hamburger">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+            
+            <ul class="navbar-menu">
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('dashboard') }}" class="navbar-link">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('students') }}" class="navbar-link">👥 Students</a></li>
+                <li><a href="{{ url_for('meals') }}" class="navbar-link">🍲 Meals</a></li>
+                <li><a href="{{ url_for('menu') }}" class="navbar-link">📋 Menu</a></li>
+                <li><a href="{{ url_for('billing') }}" class="navbar-link">💰 Billing</a></li>
+                <li><a href="{{ url_for('logout') }}" class="navbar-link">🚪 Logout</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const hamburger = document.querySelector('.hamburger');
+                const navbarMenu = document.querySelector('.navbar-menu');
+                
+                hamburger.addEventListener('click', function() {
+                    hamburger.classList.toggle('active');
+                    navbarMenu.classList.toggle('active');
+                });
+                
+                // Close menu on link click (mobile)
+                document.querySelectorAll('.navbar-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburger.classList.remove('active');
+                        navbarMenu.classList.remove('active');
+                    });
+                });
+            });
+        </script>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    </div>
+</body>
+</html>

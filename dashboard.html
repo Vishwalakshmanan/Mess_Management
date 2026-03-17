@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">Mess Management Dashboard</h1>
+      <p class="dashboard-subtitle">Welcome back! Here's today's overview</p>
+    </div>
+    <div class="header-date">{{ today_date }}</div>
+  </header>
+
+  <section class="metrics-grid">
+    <div class="metric-card primary">
+      <div class="metric-icon">👥</div>
+      <div class="metric-details">
+        <span class="metric-value">{{ total_students }}</span>
+        <span class="metric-label">Total Students</span>
+      </div>
+    </div>
+
+    <div class="metric-card success">
+      <div class="metric-icon">🍽️</div>
+      <div class="metric-details">
+        <span class="metric-value">{{ today_meals }}</span>
+        <span class="metric-label">Today's Meals</span>
+      </div>
+    </div>
+
+    <div class="metric-card warning">
+      <div class="metric-icon">💳</div>
+      <div class="metric-details">
+        <span class="metric-value">{{ pending_bills }}</span>
+        <span class="metric-label">Pending Bills</span>
+      </div>
+    </div>
+
+    <div class="metric-card accent">
+      <div class="metric-icon">₹</div>
+      <div class="metric-details">
+        <span class="metric-value">{{ (today_meals * 40)|round(0) }}</span>
+        <span class="metric-label">Est. Revenue</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <a href="{{ url_for('students') }}" class="action-card">
+        <div class="action-icon">➕</div>
+        <span>Add Student</span>
+      </a>
+      <a href="{{ url_for('meals') }}" class="action-card">
+        <div class="action-icon">📝</div>
+        <span>Record Meals</span>
+      </a>
+      <a href="{{ url_for('billing') }}" class="action-card">
+        <div class="action-icon">💰</div>
+        <span>Billing</span>
+      </a>
+      <a href="{{ url_for('menu') }}" class="action-card">
+        <div class="action-icon">🍽️</div>
+        <span>Menu</span>
+      </a>
+    </div>
+  </section>
+</div>
+
+{% endblock %}
